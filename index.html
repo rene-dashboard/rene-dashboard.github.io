@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>René Dashboard</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:#0d1117;
+    color:#c9d1d9;
+    font-family:monospace;
+    font-size:14px;
+    padding:8px;
+  }
+  .card {
+    background:#161b22;
+    border:1px solid #30363d;
+    border-radius:6px;
+    padding:10px;
+    margin-bottom:8px;
+  }
+  .card-title {
+    color:#58a6ff;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:8px;
+  }
+  .small { font-size:12px; color:#8b949e; }
+  .green { color:#3fb950; }
+  .yellow { color:#d29922; }
+  .red { color:#f85149; }
+
+  /* HEADER */
+  .header {
+    background:#161b22;
+    border:1px solid #30363d;
+    border-radius:6px;
+    padding:12px;
+    margin-bottom:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .header-title { font-size:16px; font-weight:bold; color:#e6edf3; }
+  .header-sub { font-size:11px; color:#8b949e; }
+  .value { font-size:16px; color:#e6edf3; font-weight:bold; }
+
+  /* TOPBAR */
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+
+  /* BUSCA */
+  .search-form { display:flex; gap:6px; }
+  .search-input {
+    flex:1;
+    padding:10px;
+    background:#21262d;
+    color:#58a6ff;
+    border:1px solid #30363d;
+    border-radius:6px;
+    font-size:14px;
+    font-family:monospace;
+  }
+  .search-input:focus { outline:none; border-color:#58a6ff; }
+  .search-btn {
+    padding:10px 16px;
+    background:#1f6feb;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    font-weight:bold;
+    cursor:pointer;
+    font-family:monospace;
+    font-size:14px;
+  }
+  .search-btn:active { background:#388bfd; }
+
+  /* LINKS */
+  .links-grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+  }
+  .link-btn {
+    display:block;
+    text-align:center;
+    padding:8px 4px;
+    background:#21262d;
+    border:1px solid #30363d;
+    border-radius:6px;
+    color:#c9d1d9;
+    text-decoration:none;
+    font-size:12px;
+    transition:border-color 0.2s;
+  }
+  .link-btn:hover { border-color:#58a6ff; color:#58a6ff; }
+  .link-btn.destaque { border-color:#1f6feb; color:#58a6ff; }
+  .link-emoji { font-size:16px; display:block; margin-bottom:3px; }
+
+  /* AI BUTTONS */
+  .ai-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:6px;
+  }
+  .ai-btn {
+    display:block;
+    text-align:center;
+    padding:10px 6px;
+    border-radius:6px;
+    text-decoration:none;
+    font-size:12px;
+    font-weight:bold;
+    border:1px solid;
+  }
+  .ai-gpt    { background:#0d2010; color:#3fb950; border-color:#3fb950; }
+  .ai-gemini { background:#0d1a2e; color:#58a6ff; border-color:#58a6ff; }
+  .ai-claude { background:#2d1a00; color:#f0883e; border-color:#f0883e; }
+
+  /* CLIPBOARD BTN */
+  .clip-btn {
+    width:100%;
+    padding:10px;
+    background:#21262d;
+    color:#c9d1d9;
+    border:1px solid #30363d;
+    border-radius:6px;
+    cursor:pointer;
+    font-family:monospace;
+    font-size:13px;
+    text-align:left;
+    margin-bottom:6px;
+    transition:border-color 0.2s;
+  }
+  .clip-btn:hover { border-color:#58a6ff; }
+  .clip-btn.copiado { border-color:#3fb950; color:#3fb950; }
+
+  /* TEXTAREA */
+  .notepad {
+    width:100%;
+    background:#21262d;
+    color:#c9d1d9;
+    border:1px solid #30363d;
+    border-radius:6px;
+    padding:8px;
+    font-family:monospace;
+    font-size:13px;
+    resize:vertical;
+    min-height:80px;
+  }
+  .notepad:focus { outline:none; border-color:#58a6ff; }
+
+  /* NODES LINK */
+  .nodes-banner {
+    display:block;
+    background:#0d2137;
+    border:1px solid #1f6feb;
+    border-radius:6px;
+    padding:14px;
+    text-decoration:none;
+    text-align:center;
+    margin-bottom:8px;
+    transition:background 0.2s;
+  }
+  .nodes-banner:hover { background:#112240; }
+  .nodes-banner-title {
+    font-size:15px;
+    font-weight:bold;
+    color:#58a6ff;
+    margin-bottom:4px;
+  }
+  .nodes-banner-sub { font-size:11px; color:#8b949e; }
+
+  /* CRIPTO */
+  .crypto-row {
+    display:flex;
+    justify-content:space-between;
+    padding:4px 0;
+    border-bottom:1px solid #21262d;
+    font-size:12px;
+  }
+  .crypto-row:last-child { border-bottom:none; }
+
+  .section-label {
+    font-size:10px;
+    color:#8b949e;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin:4px 0 6px;
+    padding-left:2px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="header-title">⚡ René Dashboard</div>
+    <div class="header-sub" id="ip-header">carregando IP...</div>
+  </div>
+  <div style="text-align:right">
+    <div class="value" id="hora">--:--:--</div>
+    <div class="small" id="data">---</div>
+  </div>
+</div>
+
+<!-- BUSCA -->
+<div class="card">
+  <div class="card-title">🔍 Busca</div>
+  <form class="search-form"
+        action="https://www.google.com/search"
+        method="get" target="_blank">
+    <input class="search-input" type="text" name="q" placeholder="Google Search...">
+    <button class="search-btn" type="submit">GO</button>
+  </form>
+</div>
+
+<!-- NODES BANNER -->
+<a class="nodes-banner" href="https://rene-dashboard.github.io/nodes/">
+  <div class="nodes-banner-title">📡 Nodes Dashboard</div>
+  <div class="nodes-banner-sub">5 operacionais · 1 offline · Ver todos →</div>
+</a>
+
+<!-- IAs -->
+<div class="card">
+  <div class="card-title">🤖 Inteligência Artificial</div>
+  <div class="ai-grid">
+    <a class="ai-btn ai-gpt" href="https://chat.openai.com/" target="_blank">
+      <span style="font-size:18px">🟢</span><br>ChatGPT
+    </a>
+    <a class="ai-btn ai-gemini" href="https://gemini.google.com/app?hl=pt-BR" target="_blank">
+      <span style="font-size:18px">🔵</span><br>Gemini
+    </a>
+    <a class="ai-btn ai-claude" href="https://claude.ai" target="_blank">
+      <span style="font-size:18px">🟠</span><br>Claude
+    </a>
+  </div>
+</div>
+
+<!-- FERRAMENTAS -->
+<div class="card">
+  <div class="card-title">🛠️ Ferramentas</div>
+  <div class="links-grid">
+    <a class="link-btn" href="https://br.tradingview.com/chart" target="_blank">
+      <span class="link-emoji">📈</span>TradingView
+    </a>
+    <a class="link-btn" href="https://www.dnsleaktest.com" target="_blank">
+      <span class="link-emoji">🔒</span>DNS Leak
+    </a>
+    <a class="link-btn" href="https://fast.com/pt/" target="_blank">
+      <span class="link-emoji">⚡</span>Fast.com
+    </a>
+    <a class="link-btn" href="https://www.openmultipleurl.com" target="_blank">
+      <span class="link-emoji">🔗</span>Multi URL
+    </a>
+    <a class="link-btn" href="https://drive.google.com/drive/folders/1n-rKGmEv0J7wymYpSLILBcTGnq2vvMLb?usp=sharing" target="_blank">
+      <span class="link-emoji">📁</span>Drive
+    </a>
+    <a class="link-btn" href="https://mail.google.com" target="_blank">
+      <span class="link-emoji">📧</span>Gmail
+    </a>
+    <a class="link-btn" href="https://faucetpay.io/page/user-admin" target="_blank">
+      <span class="link-emoji">💳</span>FaucetPay
+    </a>
+    <a class="link-btn" href="https://accounts.binance.me/pt-BR/register?ref=163079522" target="_blank">
+      <span class="link-emoji">🟡</span>Binance
+    </a>
+  </div>
+</div>
+
+<!-- LINKS RÁPIDOS -->
+<div class="card">
+  <div class="card-title">🔖 Links Rápidos</div>
+  <div class="links-grid">
+    <a class="link-btn" href="http://m.youtube.com" target="_blank">
+      <span class="link-emoji">▶️</span>YouTube
+    </a>
+    <a class="link-btn" href="https://www.blogger.com/" target="_blank">
+      <span class="link-emoji">✍️</span>Blogger
+    </a>
+    <a class="link-btn" href="https://x.com/home" target="_blank">
+      <span class="link-emoji">𝕏</span>X
+    </a>
+    <a class="link-btn destaque"
+       href="renemybookmarks.blogspot.com/p/index1.html" target="_blank">
+      <span class="link-emoji">📚</span>Bookmarks
+    </a>
+    <a class="link-btn" href="https://www8.receita.fazenda.gov.br/SimplesNacional/Aplicacoes/ATSPO/pgmei.app/Identificacao" target="_blank">
+      <span class="link-emoji">🧾</span>DasMEI
+    </a>
+    <a class="link-btn" href="https://github.com/rene-dashboard" target="_blank">
+      <span class="link-emoji">🐙</span>GitHub
+    </a>
+    <a class="link-btn" style="opacity:0.4;pointer-events:none">
+      <span class="link-emoji">➕</span>Pendente
+    </a>
+    <a class="link-btn" style="opacity:0.4;pointer-events:none">
+      <span class="link-emoji">➕</span>Pendente
+    </a>
+  </div>
+</div>
+
+<!-- CLIPBOARD -->
+<div class="card">
+  <div class="card-title">📋 Clipboard Rápido</div>
+  <button class="clip-btn" onclick="copiar(this,'tutorial passo a passo em um bloco de texto comentado para copiar para um editor de texto para prosseguir offline :)')">
+    🤖 Prompt GPT — Tutorial offline
+  </button>
+  <button class="clip-btn" onclick="copiar(this,'PENDENTE')">
+    ➕ Slot livre — clique para editar
+  </button>
+</div>
+
+<!-- BLOCO DE NOTAS -->
+<div class="card">
+  <div class="card-title">📝 Notas Rápidas</div>
+  <textarea class="notepad" placeholder="Digite aqui... (não salva ao fechar)"></textarea>
+  <div class="small" style="margin-top:4px">⚠️ Notas são apagadas ao fechar a página</div>
+</div>
+
+<!-- CRIPTO -->
+<div class="card">
+  <div class="card-title">💰 Cripto (USD)</div>
+  <div id="crypto-container"><div class="small">carregando...</div></div>
+</div>
+
+<script>
+// HORA
+function atualizarHora() {
+  const agora = new Date();
+  document.getElementById('hora').textContent =
+    agora.toLocaleTimeString('pt-BR');
+  document.getElementById('data').textContent =
+    agora.toLocaleDateString('pt-BR',
+      {weekday:'short',day:'2-digit',month:'short'});
+}
+setInterval(atualizarHora, 1000);
+atualizarHora();
+
+// IP
+function buscarIP() {
+  fetch('https://ipapi.co/json/')
+    .then(r=>r.json())
+    .then(d=>{
+      document.getElementById('ip-header').textContent =
+        `${d.ip||'?'} · ${d.city||''}, ${d.country_name||''}`;
+    })
+    .catch(()=>{
+      document.getElementById('ip-header').textContent='IP não disponível';
+    });
+}
+buscarIP();
+setInterval(buscarIP, 600000);
+
+// CLIPBOARD
+function copiar(btn, texto) {
+  const original = btn.innerHTML;
+  navigator.clipboard.writeText(texto).catch(()=>{
+    const t = document.createElement('textarea');
+    t.value = texto;
+    document.body.appendChild(t);
+    t.select();
+    document.execCommand('copy');
+    document.body.removeChild(t);
+  });
+  btn.classList.add('copiado');
+  btn.innerHTML = '✅ Copiado!';
+  setTimeout(()=>{
+    btn.classList.remove('copiado');
+    btn.innerHTML = original;
+  }, 2000);
+}
+
+// CRIPTO
+function buscarCripto() {
+  const ids = 'bitcoin,ethereum,tether,solana,litecoin,binancecoin';
+  fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`)
+    .then(r=>r.json())
+    .then(d=>{
+      const moedas = [
+        {id:'bitcoin',nome:'BTC'},{id:'ethereum',nome:'ETH'},
+        {id:'tether',nome:'USDT'},{id:'solana',nome:'SOL'},
+        {id:'litecoin',nome:'LTC'},{id:'binancecoin',nome:'BNB'},
+      ];
+      let html = '';
+      moedas.forEach(m=>{
+        const info = d[m.id]; if(!info) return;
+        const preco = info.usd.toLocaleString('en-US',
+          {style:'currency',currency:'USD'});
+        const ch = (info.usd_24h_change||0).toFixed(2);
+        const cor = parseFloat(ch)>=0?'#3fb950':'#f85149';
+        const sinal = parseFloat(ch)>=0?'+':'';
+        html+=`<div class="crypto-row">
+          <span>${m.nome}</span>
+          <span>${preco}</span>
+          <span style="color:${cor}">${sinal}${ch}%</span>
+        </div>`;
+      });
+      document.getElementById('crypto-container').innerHTML = html;
+    })
+    .catch(()=>{
+      document.getElementById('crypto-container').innerHTML=
+        '<div class="small" style="color:#f85149">API indisponível</div>';
+    });
+}
+buscarCripto();
+setInterval(buscarCripto, 300000);
+</script>
+</body>
+</html>
